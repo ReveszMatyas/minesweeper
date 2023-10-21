@@ -110,7 +110,7 @@ button:hover {
 }
 
 .cell:hover {
-  opacity: 10%;
+  opacity: 10%; /* ez csak poén egyelőre */
 }
 
 
