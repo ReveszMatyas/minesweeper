@@ -50,6 +50,10 @@ button:hover {
   background-color: #0056b3;
 }
 
+.hardness {
+  margin-top: 10px;
+}
+
 /* Style for Minesweeper Container */
 .minesweeper-container {
   text-align: center;
@@ -69,8 +73,6 @@ button:hover {
 
 .minesweeper-grid {
   display: grid;
-  grid-template-columns: repeat(8, 30px);
-  width: 120px;
   background-color: #ccc; 
   border: 2px solid #999;
   border-radius: 5px;
@@ -79,13 +81,13 @@ button:hover {
 
 /* Style for Individual Cells */
 .cell {
-  width: 30px; /* Cell width */
-  height: 30px; /* Cell height */
+  width: 24px; /* Cell width */
+  height: 24px; /* Cell height */
   background-color: #ddd; /* Cell background color */
   border: 1px solid #999;
   text-align: center;
   vertical-align: middle;
-  line-height: 30px;
+  line-height: 24px;
   cursor: pointer;
 }
 
@@ -110,7 +112,7 @@ button:hover {
 }
 
 .cell:hover {
-  opacity: 10%; /* ez csak poén egyelőre */
+
 }
 
 

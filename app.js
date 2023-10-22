@@ -1,6 +1,17 @@
+let size;
+let hardness;
+
 const btnGenerate = document.getElementById("generateGrid");
 const selector = document.getElementById("gridSize");
-let size;
+
+
+const allInputs = document.getElementsByTagName("input")
+
+
+
+
+import { Minesweeper } from './minesweeper_class.js'
+
 
 function removeElementsByClass(className){
   const elements = document.getElementsByClassName(className);
@@ -10,7 +21,19 @@ function removeElementsByClass(className){
 }
 
 btnGenerate.addEventListener('click', () => {
+
   size = parseInt(selector.value);
+  for (let i = 0; i < allInputs.length; i++){
+    if (allInputs[i].type === "radio" && allInputs[i].checked){
+      hardness = parseFloat(allInputs[i].value);
+      break;
+    }
+  }
+
+  if (hardness === 0)
+    return;
+
+  const ms = new Minesweeper(size, hardness);
 
   // clean up all elements
   removeElementsByClass("minesweeper-grid");
@@ -18,16 +41,20 @@ btnGenerate.addEventListener('click', () => {
   // create a new div
   const minesweeperGrid = document.createElement("div");
   minesweeperGrid.className = "minesweeper-grid"
-  minesweeperGrid.style.gridTemplateColumns = "repeat(" + size + ", 30px)"
-  minesweeperGrid.style.width = (size * 30).toString() + "px";
+  minesweeperGrid.style.gridTemplateColumns = "repeat(" + size + ", 24px)"
+  minesweeperGrid.style.width = (size * 24 + 2).toString() + "px";
   
   // place div
   const minesweeperContainer = document.getElementsByClassName("minesweeper-container")[0];
   minesweeperContainer.appendChild(minesweeperGrid);
 
-  for (let i = 0; i < size*size; i++){
-    const newCell = document.createElement('div');
-    newCell.className = "cell";
-    minesweeperGrid.appendChild(newCell);
+  // fill with cells
+  for (let i = 0; i < size; i++){
+    for (let j = 0; j < size; j++){
+      const newCell = document.createElement('div');
+      newCell.className = "cell";
+      newCell.innerText = ms.array[i][j];
+      minesweeperGrid.appendChild(newCell);
+    }
   }
 });
