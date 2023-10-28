@@ -81,6 +81,7 @@ button:hover {
 
 /* Style for Individual Cells */
 .cell {
+  color: black;
   width: 24px; /* Cell width */
   height: 24px; /* Cell height */
   background-color: #ddd; /* Cell background color */
@@ -91,26 +92,24 @@ button:hover {
   cursor: pointer;
 }
 
-.cell.unopened {
+.cell.unclicked {
 
 }
 
-.cell.numbered {
-
+.cell.uncovered {
+  background-color: #fff;
 }
 
-.cell.blank {
 
-}
 
 .cell.flagged {
-  background-color: #ffcccc;
+  color: #ffcccc;
 }
-
+/* TODO: implement
 .cell.question {
 
 }
-
+*/
 .cell:hover {
 
 }

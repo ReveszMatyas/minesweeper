@@ -31,15 +31,11 @@ export class Minesweeper {
           this.array[i].push(0);
       }
     }
-    console.log("The original grid:");
-    this.displayGrid();
-    console.log("After: ");
     // Add cell values
 
     for (let i = 0; i < this.size; i++)
       for (let j = 0; j < this.size; j++)
         this.countValue(i, j);
-
   }
 
   countValue(row, column){
