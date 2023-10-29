@@ -73,27 +73,23 @@ button:hover {
 
 .minesweeper-grid {
   display: grid;
-  background-color: #ccc; 
+  background-color: #ccc;
   border: 2px solid #999;
   border-radius: 5px;
   margin-top: 10px;
 }
 
-/* Style for Individual Cells */
 .cell {
   color: black;
-  width: 24px; /* Cell width */
-  height: 24px; /* Cell height */
-  background-color: #ddd; /* Cell background color */
+  width: 24px; 
+  height: 24px; 
+  background-color: #ddd; 
   border: 1px solid #999;
   text-align: center;
   vertical-align: middle;
   line-height: 24px;
   cursor: pointer;
-}
-
-.cell.unclicked {
-
+  user-select: none;
 }
 
 .cell.uncovered {
@@ -103,16 +99,13 @@ button:hover {
 
 
 .cell.flagged {
-  color: #ffcccc;
+  background-color: #ffcccf;
 }
 /* TODO: implement
 .cell.question {
 
 }
 */
-.cell:hover {
-
-}
 
 
 

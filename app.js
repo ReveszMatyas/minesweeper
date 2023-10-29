@@ -1,69 +1,124 @@
 let size;
 let hardness;
-const cells = [];
 
+const cells = [];
+const leftclickEventListeners = [];
+const rightclickEventListeners = [];
 const btnGenerate = document.getElementById("generateGrid");
 const selector = document.getElementById("gridSize");
-
-
 const allInputs = document.getElementsByTagName("input")
+const mineImgSrc = 'resources/Be-Os-Be-Box-BeBox-Minesweeper32.png'
+const flagImgSrc = 'resources/Iconsmind-Outline-Flag.png'
+
 
 import { Minesweeper } from './minesweeper_class.js'
 
-function cellClicked(cell){
-  let val = cell.getAttribute('value');
+function cellClicked(cellObj){
+  //console.log(cellObj.cell);
+  let val = cellObj.cell.getAttribute('value');
 
   if (val === "-1"){
-    cell.classList.remove("unclicked");
-    cell.classList.add("uncovered");
-    //gameLost();
+    uncoverCell(cellObj.cell)
+    gameLost(cellObj.cell);
   } else if (val === "0"){
-    cell.classList.remove("unclicked");
-    cell.classList.add("uncovered");
-    // TODO: search algorithm to uncover all connecting "0" fields
+    uncoverEmptyCells(cellObj);
   } else {
-    cell.classList.remove("unclicked");
-    cell.classList.add("uncovered");
-    console.log(val);
+    uncoverCell(cellObj.cell)
     switch (val){
       case "1":
-        formatCell(cell, "#FFBF00");
+        formatCell(cellObj.cell, "#FFBF00");
         break;
       case "2":
-        formatCell(cell, "#FF7000");
+        formatCell(cellObj.cell, "#FF7000");
         break;
       case "3":
-        formatCell(cell, "#540375");
+        formatCell(cellObj.cell, "#540375");
         break;
       case "4":
-        formatCell(cell, "#10A19D");
+        formatCell(cellObj.cell, "#10A19D");
         break;
       case "5":
-        formatCell(cell, "#00A9FF");
+        formatCell(cellObj.cell, "#00A9FF");
         break;
       case "6":
-        formatCell(cell, "#F875AA");
+        formatCell(cellObj.cell, "#F875AA");
         break;
       case "7":
-        formatCell(cell, "#57375D");
+        formatCell(cellObj.cell, "#57375D");
         break;
       case "8":
-        formatCell(cell, "#4C4C6D");
+        formatCell(cellObj.cell, "#4C4C6D");
         break;
     }
-    cell.innerText = val;
+    cellObj.cell.innerText = val;
   }
 
 }
+
+function uncoverEmptyCells(cellObj){
+  uncoverCell(cellObj.cell);
+  for (let i = Math.max(cellObj.i - 1, 0); i <= Math.min (cellObj.i + 1, cells.length - 1); i++)
+    for (let j = Math.max(cellObj.j - 1, 0); j <= Math.min(cellObj.j + 1, cells[i].length - 1); j++)
+      if(cells[i][j].cell.classList.contains('unclicked'))
+        cellClicked(cells[i][j]);
+}
+
+function uncoverCell(cell){
+  cell.classList.remove("unclicked");
+  cell.classList.add("uncovered");
+}
+
 
 function formatCell(cell, color){
   cell.style.color = color;
   cell.style.fontWeight = "bold";
 }
 
-// TODO implement
-function gameLost(){
+function removeEventListeners(listeners) {
+  for (const { element, listener } of listeners) {
+    element.removeEventListener('click', listener);
+  }
+}
 
+// TODO implement: replay button, goback button
+function gameLost(cell){
+  removeEventListeners(leftclickEventListeners);
+  removeEventListeners(rightclickEventListeners);
+  cell.style.backgroundColor = "red"
+
+  for(let i = 0; i < cells.length; i++){
+    for(let j = 0; j < cells[i].length; j++){
+
+        if (cells[i][j].cell.getAttribute('value') === "-1"){
+            if(cells[i][j].cell.classList.contains('flagged')){
+              cells[i][j].cell.removeChild(cells[i][j].cell.children[0]);
+              cells[i][j].cell.classList.remove('flagged');
+            }
+            const mineImg = document.createElement('img');
+            mineImg.src = mineImgSrc;
+            mineImg.style.width = cells[i][j].cell.clientWidth + "px";
+            mineImg.style.height = cells[i][j].cell.clientHeight + "px";
+            cells[i][j].cell.appendChild(mineImg);
+          }
+      }
+    }
+}
+
+function flagCell(cellObj){
+  let c = cellObj.cell
+  if (c.classList.contains('unclicked')){
+    if(c.classList.contains('flagged')){
+      c.classList.remove('flagged');
+      c.removeChild(c.children[0]);
+    } else {
+      c.classList.add('flagged');
+      const flagImg = document.createElement('img');
+      flagImg.src = flagImgSrc;
+      flagImg.style.width = c.clientWidth + "px";
+      flagImg.style.height = c.clientHeight + "px";
+      c.appendChild(flagImg);
+    }
+  }
 }
 
 
@@ -109,17 +164,30 @@ btnGenerate.addEventListener('click', () => {
       const newCell = document.createElement('div');
       newCell.className = "cell unclicked";
       newCell.setAttribute('value', ms.array[i][j]);
-      cells[i][j] = newCell;
+      cells[i][j] = {
+        'i' : i,
+        'j' : j,
+        'cell' : newCell
+      };
       minesweeperGrid.appendChild(newCell);
     }
   }
 
   for (let i = 0; i < size; i++){
     for (let j = 0; j < size; j++){
-    cells[i][j].addEventListener('click',  () =>{
-      cellClicked(cells[i][j]);
-    })
-  }};
+      function handleRightClick(event){
+        event.preventDefault();
+        flagCell(cells[i][j]);
+      }
+      function handleClick(){
+        cellClicked(cells[i][j]);
+      }
+      rightclickEventListeners.push({ element: cells[i][j].cell, listener: handleRightClick })
+      leftclickEventListeners.push({ element: cells[i][j].cell, listener: handleClick });
+      
+      cells[i][j].cell.addEventListener('click', handleClick)
+      cells[i][j].cell.addEventListener('contextmenu', handleRightClick)
+  }}
 });
 
 
