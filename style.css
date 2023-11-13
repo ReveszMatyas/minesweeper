@@ -56,7 +56,9 @@ button:hover {
 
 /* Style for Minesweeper Container */
 .minesweeper-container {
+  display: none;
   text-align: center;
+  align-items: center;
   padding: 20px;
   background-color: #f4f4f4;
   border: 1px solid #ccc;
@@ -101,6 +103,15 @@ button:hover {
 .cell.flagged {
   background-color: #ffcccf;
 }
+
+#mine-counter {
+  border-radius: 3px;
+  display: flex;
+  width: 300px;
+  border:#007BFF 4px solid;
+  border-radius: 4px;
+}
+
 /* TODO: implement
 .cell.question {
 

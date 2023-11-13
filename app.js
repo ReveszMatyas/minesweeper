@@ -1,5 +1,8 @@
 let size;
-let hardness;
+let hardness = 1;
+let minesLeftDisplay;
+let minesLeft;
+let flagsLeft;
 
 const cells = [];
 const leftclickEventListeners = [];
@@ -9,7 +12,7 @@ const selector = document.getElementById("gridSize");
 const allInputs = document.getElementsByTagName("input")
 const mineImgSrc = 'resources/Be-Os-Be-Box-BeBox-Minesweeper32.png'
 const flagImgSrc = 'resources/Iconsmind-Outline-Flag.png'
-
+const playfieldContainer = document.getElementsByClassName("minesweeper-container")[0];
 
 import { Minesweeper } from './minesweeper_class.js'
 
@@ -65,6 +68,7 @@ function uncoverEmptyCells(cellObj){
 
 function uncoverCell(cell){
   cell.classList.remove("unclicked");
+  cell.classList.remove("flagged");
   cell.classList.add("uncovered");
 }
 
@@ -80,7 +84,7 @@ function removeEventListeners(listeners) {
   }
 }
 
-// TODO implement: replay button, goback button
+
 function gameLost(cell){
   removeEventListeners(leftclickEventListeners);
   removeEventListeners(rightclickEventListeners);
@@ -104,20 +108,42 @@ function gameLost(cell){
     }
 }
 
-function flagCell(cellObj){
-  let c = cellObj.cell
-  if (c.classList.contains('unclicked')){
-    if(c.classList.contains('flagged')){
-      c.classList.remove('flagged');
-      c.removeChild(c.children[0]);
-    } else {
-      c.classList.add('flagged');
-      const flagImg = document.createElement('img');
-      flagImg.src = flagImgSrc;
-      flagImg.style.width = c.clientWidth + "px";
-      flagImg.style.height = c.clientHeight + "px";
-      c.appendChild(flagImg);
+function gameWon(){
+  for (let i = 0; i < cells.length; i++){
+    for (let j = 0; j < cells[i].length;j++){
+      uncoverCell(cells[i][j].cell);
     }
+    
+  }
+  alert("Game won!")
+}
+
+function flagCell(cellObj){
+  let c = cellObj.cell;
+  if (flagsLeft > 0){
+    if (c.classList.contains('unclicked')){
+      if(c.classList.contains('flagged')){
+        c.classList.remove('flagged');
+        c.removeChild(c.children[0]);
+        minesLeftDisplay++;
+        flagsLeft++;
+        if (c.getAttribute("value") === "-1")
+          minesLeft++;
+      } else {
+        c.classList.add('flagged');
+        const flagImg = document.createElement('img');
+        flagImg.src = flagImgSrc;
+        flagImg.style.width = c.clientWidth + "px";
+        flagImg.style.height = c.clientHeight + "px";
+        c.appendChild(flagImg);
+        minesLeftDisplay--;
+        if (c.getAttribute("value") === "-1")
+        minesLeft--;
+        flagsLeft--;
+      }
+    }
+    if (minesLeft === 0)
+      gameWon();
   }
 }
 
@@ -143,11 +169,14 @@ btnGenerate.addEventListener('click', () => {
     return;
 
   const ms = new Minesweeper(size, hardness);
-
+  minesLeftDisplay = ms.cntMines();
+  minesLeft = ms.cntMines();
+  flagsLeft = ms.cntMines();
   // clean up all elements
   removeElementsByClass("minesweeper-grid");
 
   // create a new div
+  playfieldContainer.style.display = "inline-block";
   const minesweeperGrid = document.createElement("div");
   minesweeperGrid.className = "minesweeper-grid"
   minesweeperGrid.style.gridTemplateColumns = "repeat(" + size + ", 24px)"
